@@ -1,0 +1,95 @@
+<?php
+// calculate VAT and commission
+function calculateVATandCommission($propertyPrice, $vatRate, $commissionRate) {
+    // Calculate VAT and commission amounts
+    $vatAmount = $propertyPrice * $vatRate;
+    $commissionAmount = $propertyPrice * $commissionRate;
+
+    // Calculate total amount (property price + VAT + commission)
+    $totalAmount = $propertyPrice + $vatAmount + $commissionAmount;
+
+    // Create array to store the results
+    $result = array(
+        'propertyPrice' => $propertyPrice,
+        'vatRate' => $vatRate,
+        'commissionRate' => $commissionRate,
+        'vatAmount' => $vatAmount,
+        'commissionAmount' => $commissionAmount,
+        'totalAmount' => $totalAmount
+    );
+
+    return $result;
+}
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // user input from the form
+    $propertyPrice = $_POST["propertyPrice"];
+    $vatRate = $_POST["vatRate"] / 100; // Convert percentage to decimal
+    $commissionRate = $_POST["commissionRate"] / 100; 
+    // function to calculate VAT and commission
+    $result = calculateVATandCommission($propertyPrice, $vatRate, $commissionRate);
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAT and Commission Calculator</title>
+
+<style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+	  padding: 20px;
+	  background:#53ccf5 ;
+    }
+    
+    h2 {
+      border: 2px solid black;
+      display: inline-block;
+      padding: 10px;
+    }
+    
+    form {
+      border: 5px solid black;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+    <label for="propertyPrice">Property Price:</label>
+    <input type="text" name="propertyPrice" required>
+    <br>
+    <label for="vatRate">VAT Rate (%):</label>
+    <input type="text" name="vatRate" required>
+    <br>
+    <label for="commissionRate">Commission Rate (%):</label>
+    <input type="text" name="commissionRate" required>
+    <br>
+    <button type="submit">Calculate</button>
+</form>
+
+<?php
+// Display the results
+if (isset($result)) {
+    echo "<h2>Results</h2>";
+    echo "Property Price: $" . $result['propertyPrice'] . "<br>";
+    echo "VAT Rate: " . ($result['vatRate'] * 100) . "%<br>";
+    echo "Commission Rate: " . ($result['commissionRate'] * 100) . "%<br>";
+    echo "VAT Amount: R" . $result['vatAmount'] . "<br>";
+    echo "Commission Amount: R" . $result['commissionAmount'] . "<br>";
+    echo "Total Amount (Property Price + VAT + Commission): R" . $result['totalAmount'];
+}
+?>
+
+</body>
+</html>
